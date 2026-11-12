@@ -1,0 +1,56 @@
+{
+  "name": "infal73-tp4-student",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TP INFAL73 - Partie 5 : messagerie RabbitMQ et gestion des pannes (socle étudiant, suite du TP3)",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "workspaces": [
+    "packages/contracts",
+    "apps/order-service",
+    "apps/stock-service",
+    "apps/preparation-worker"
+  ],
+  "scripts": {
+    "postinstall": "npm run build -w packages/contracts",
+    "predev": "npm run build -w packages/contracts",
+    "dev": "node scripts/dev.mjs",
+    "dev:orders": "npm run dev -w apps/order-service",
+    "dev:stocks": "npm run dev -w apps/stock-service",
+    "dev:worker": "npm run dev -w apps/preparation-worker",
+    "infra:up": "node scripts/infra.mjs up",
+    "infra:down": "node scripts/infra.mjs down",
+    "infra:destroy": "node scripts/infra.mjs destroy",
+    "infra:status": "node scripts/infra.mjs status",
+    "infra:topology": "node scripts/topology.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
+    "lab:state": "node scripts/lab/state.mjs",
+    "lab:dependency-down": "node scripts/lab/dependency-down.mjs",
+    "lab:invalid-json": "node scripts/lab/inject-invalid-json.mjs",
+    "lab:duplicates": "node scripts/lab/publish-duplicates.mjs",
+    "lab:broker": "node scripts/lab/broker.mjs",
+    "reset": "node scripts/reset.mjs",
+    "build": "npm run build --workspaces",
+    "pretypecheck": "npm run build -w packages/contracts",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run build -w packages/contracts",
+    "test": "tsx --test --test-concurrency=1 \"tests/smoke/*.test.ts\"",
+    "pretest:acceptance": "npm run build -w packages/contracts",
+    "test:acceptance": "tsx --test --test-concurrency=1 \"tests/acceptance/*.test.ts\"",
+    "test:acceptance:tp3": "tsx --test --test-concurrency=1 \"tests/acceptance/tp3-*.test.ts\" \"tests/acceptance/availability-contract.test.ts\"",
+    "test:acceptance:tp4": "tsx --test --test-concurrency=1 \"tests/acceptance/tp4-*.test.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "@types/ws": "^8.18.2",
+    "ws": "^8.22.2",
+    "@types/pg": "8.23.1"
+  },
+  "dependencies": {
+    "pg": "8.23.1"
+  }
+}

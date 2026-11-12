@@ -1,0 +1,18 @@
+flowchart TB
+  XC{{"Exchange orders.commands<br/>direct, durable"}}
+  QP[("Queue orders.prepare<br/>durable<br/>DLX = orders.dead, clé order.failed")]
+  XR{{"Exchange orders.retry<br/>direct, durable"}}
+  Q2[("orders.retry.2s<br/>TTL 2000 ms")]
+  Q5[("orders.retry.5s<br/>TTL 5000 ms")]
+  Q10[("orders.retry.10s<br/>TTL 10000 ms")]
+  XD{{"Exchange orders.dead<br/>direct, durable"}}
+  DLQ[("Queue orders.prepare.dlq<br/>durable")]
+  XC -- "binding order.prepare" --> QP
+  XR -- "binding retry.1" --> Q2
+  XR -- "binding retry.2" --> Q5
+  XR -- "binding retry.3" --> Q10
+  Q2 -. "TTL échu : dead-letter<br/>orders.commands / order.prepare" .-> XC
+  Q5 -. "idem" .-> XC
+  Q10 -. "idem" .-> XC
+  QP -. "rejet (nack sans requeue) : dead-letter<br/>orders.dead / order.failed" .-> XD
+  XD -- "binding order.failed" --> DLQ
